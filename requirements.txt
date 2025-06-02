@@ -1,0 +1,8 @@
+python-dotenv
+python-telegram-bot~=20.0
+yt-dlp
+Flask
+Flask-MySQLdb
+pycryptodome # For password hashing in admin panel if not using simple password_hash (Flask uses werkzeug.security which includes pbkdf2)
+gunicorn # For production Flask deployment
+mysql-connector-python # Alternative if flask_mysqldb has issues or prefer direct conn
