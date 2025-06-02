@@ -1,0 +1,83 @@
+<!-- tg_dl_bot/web_admin/dashboard.html -->
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت ربات دانلودر - داشبورد</title>
+    <link rel="stylesheet" href="/admin/static/styles.css"> <!-- New CSS path -->
+</head>
+<body>
+    <div class="header">
+        <h1>داشبورد پنل مدیریت</h1>
+        <button id="logoutBtn">خروج</button>
+    </div>
+    <div class="container">
+        <h2 id="welcomeMsg">خوش آمدید!</h2>
+        <p>تعداد کل کاربران: <span id="totalUsers">...</span></p>
+        <p>کاربران جدید امروز: <span id="newUsersToday">...</span></p>
+        <p>کل دانلودها: <span id="totalDownloads">...</span></p>
+        <p>دانلودهای ناموفق: <span id="failedDownloads">...</span></p>
+        <h3>آمار دانلود بر اساس پلتفرم:</h3>
+        <ul id="platformStats"></ul>
+        
+        <!-- Quick links to other admin features -->
+        <div class="admin-nav">
+            <a href="/admin/api/downloads" class="nav-button">مدیریت دانلودها</a>
+            <a href="/admin/api/settings" class="nav-button">تنظیمات ربات</a>
+            <a href="/admin/api/locked_channels" class="nav-button">مدیریت کانال‌های قفل‌دار</a>
+            <a href="/admin/api/broadcast" class="nav-button">پیام همگانی</a>
+            <a href="/admin/api/users" class="nav-button">مدیریت ادمین‌ها</a>
+        </div>
+    </div>
+    <script src="/admin/static/scripts.js"></script> <!-- New JS path -->
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/admin/api/logout', { method: 'POST' }); // New API path
+                if (response.ok) {
+                    window.location.href = '/admin/'; // Redirect to root admin path (will redirect to login)
+                } else {
+                    alert('خطا در خروج.');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+
+        async function fetchDashboardData() {
+            try {
+                const meResponse = await fetch('/admin/api/me'); // New API path
+                if (meResponse.status === 401) {
+                    window.location.href = '/admin/'; // Redirect to login if not authenticated
+                    return;
+                }
+                const meData = await meResponse.json();
+                document.getElementById('welcomeMsg').textContent = `خوش آمدید، ${meData.username}!`;
+
+                const statsResponse = await fetch('/admin/api/dashboard/stats'); // New API path
+                const statsData = await statsResponse.json();
+
+                document.getElementById('totalUsers').textContent = statsData.total_users;
+                document.getElementById('newUsersToday').textContent = statsData.new_users_today;
+                document.getElementById('totalDownloads').textContent = statsData.total_downloads;
+                document.getElementById('failedDownloads').textContent = statsData.failed_downloads;
+
+                const platformStatsUl = document.getElementById('platformStats');
+                platformStatsUl.innerHTML = '';
+                statsData.platform_downloads.forEach(p => {
+                    const li = document.createElement('li');
+                    li.textContent = `${p.platform.charAt(0).toUpperCase() + p.platform.slice(1)}: ${p.count} دانلود`;
+                    platformStatsUl.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+                alert('خطا در دریافت اطلاعات داشبورد.');
+            }
+        }
+
+        fetchDashboardData();
+    </script>
+</body>
+</html>

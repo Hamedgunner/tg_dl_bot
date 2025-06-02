@@ -1,0 +1,54 @@
+<!-- tg_dl_bot/web_admin/login.html -->
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت ربات دانلودر - ورود</title>
+    <link rel="stylesheet" href="/admin/static/styles.css"> <!-- New CSS path -->
+</head>
+<body>
+    <div class="login-container">
+        <h2>ورود به پنل مدیریت</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="نام کاربری" required>
+            <input type="password" id="password" placeholder="رمز عبور" required>
+            <button type="submit">ورود</button>
+        </form>
+        <p id="message" class="message"></p>
+    </div>
+    <script src="/admin/static/scripts.js"></script> <!-- New JS path -->
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = '';
+            messageDiv.className = 'message';
+
+            try {
+                const response = await fetch('/admin/api/login', { // New API path
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.textContent = data.message;
+                    messageDiv.classList.add('success');
+                    window.location.href = '/admin/dashboard.html'; // Redirect to dashboard
+                } else {
+                    messageDiv.textContent = data.message || 'خطا در ورود';
+                    messageDiv.classList.add('error');
+                }
+            } catch (error) {
+                messageDiv.textContent = 'خطا در اتصال به سرور.';
+                messageDiv.classList.add('error');
+                console.error('Login error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

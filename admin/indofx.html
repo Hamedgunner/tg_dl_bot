@@ -1,0 +1,26 @@
+<!-- tg_dl_bot/web_admin/index.html -->
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت</title>
+</head>
+<body>
+    <script>
+        // Redirect to login or dashboard based on session (checked via API call)
+        fetch('/admin/api/me')
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/admin/dashboard.html';
+                } else {
+                    window.location.href = '/admin/login.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking authentication:', error);
+                window.location.href = '/admin/login.html'; // Default to login on error
+            });
+    </script>
+</body>
+</html>
