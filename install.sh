@@ -30,7 +30,7 @@ apt upgrade -y
 apt install -y git python3 python3-pip python3-venv ffmpeg mariadb-server libmariadb-dev nginx supervisor certbot python3-certbot-nginx rsync curl
 
 # Clone the repo if it's not already there. Assumes this script is either run from a temp clone or downloaded directly.
-GIT_REPO_URL="https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git" # <--- REPLACE WITH YOUR GITHUB REPO URL
+GIT_REPO_URL="https://github.com/Hamedgunner/tg_dl_bot.git" # <--- Updated with your GitHub repo URL
 
 if [ ! -d "$INSTALL_DIR" ]; then
     echo "در حال کلون کردن مخزن گیت‌هاب از $GIT_REPO_URL به $INSTALL_DIR ..."
@@ -118,7 +118,6 @@ else:
 
 echo "کاربر ادمین اولیه ایجاد شد."
 
-
 echo "[۵/۷] پیکربندی Nginx..."
 # Webhook path is the bot token itself for simplicity
 WEBHOOK_PATH="${BOT_TOKEN_PROMPT}" 
@@ -167,7 +166,6 @@ server {
         proxy_read_timeout 75s;
         proxy_send_timeout 75s;
     }
-
 
     error_page 404 /404.html;
     location = /404.html {
